@@ -1,0 +1,44 @@
+
+CREATE TYPE role_enum AS ENUM ('producteur','acheteur','admin');
+
+
+-- End of DDL
+ALTER TABLE order_item
+ADD COLUMN updated_at timestamptz NOT NULL DEFAULT now();
+
+
+INSERT INTO app_user (email, password_hash, role, display_name)
+VALUES ('buyer@mail.com','test123','acheteur','Acheteur 1')
+RETURNING id;
+
+INSERT INTO buyer (user_id, organisation, adresse)
+VALUES ('d492ad09-c45e-44e0-ae56-4416586f28e4','Tesla','Antananarivo')
+RETURNING id;
+
+
+INSERT INTO app_user (email, password_hash, role, display_name)
+VALUES ('alice@mail.com', 'azer', 'producteur', 'Alice')
+RETURNING id;
+
+INSERT INTO producer (user_id, organisation, region, parcelle_nom)
+VALUES ('6fe2b849-a6ea-4480-aaac-90e8a9d0a57f', 'Ferme Alice', 'Antananarivo', 'Parcelle 1')
+RETURNING id;
+
+
+INSERT INTO culture (id, producer_id, nom, variete, annee, parcelle, note)
+VALUES
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'Mange', 'Roma', 2025, 'Parcelle A', 'Mange bio de première qualité'),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'Pomme', 'Golden', 2025, 'Parcelle B', 'Pommes sucrées et juteuses'),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'Carotte', 'Orange', 2025, 'Parcelle C', 'Carottes fraîches et croquantes'),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'Miel', 'Acacia', 2025, 'Ruche 1', 'Miel pur naturel'),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'Laitue', 'Romana', 2025, 'Parcelle D', 'Laitue bio fraîche');
+
+
+
+INSERT INTO product (producer_id, culture_id, titre, description, price, quantity_available, unit, image_urls, active)
+VALUES
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'f23d5470-6a6d-4c8d-9d1f-5116e98be0e0', 'Mange Bio Roma', 'Mange rouges, cultivées sans pesticide', 2.50, 100.500, 'kg', ARRAY['https://www.vitabio.fr/img/modules/oh_ingredients/ingredients/15_picture.jpg','https://www.cultures-sucre.com/Medias/article/mangue@44f45bdb-c37a-4c1f-adc4-877ef47f4bed.jpg'], true),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'f876770d-4006-4997-a4ec-7c700e0c10d7', 'Pommes Golden 1kg', 'Pommes Golden sucrées', 3.20, 50.000, 'kg', ARRAY['https://res.cloudinary.com/keplr/image/upload/v1569572439/production/mon_marche/7440_POMME_GOLDEN.jpg'], true),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'f1886207-30bc-49bb-884c-cfac00a270c5', 'Carottes fraîches', 'Carottes bio croquantes', 1.80, 75.000, 'kg', ARRAY['https://back.femininbio.com/attachments/2020/11/20/square/w1000/20864-20864-carrots-673184.jpg'], true),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', 'c0a9b074-76a0-4ea0-835c-e680b1bdb921', 'Miel d acacia 500g', 'Miel pur naturel', 10.00, 20.750, 'L', ARRAY['https://img.passeportsante.net/1200x675/2021-05-03/i102093-miel-nu.webp'], true),
+('fb4716ad-b486-4b2c-a5d2-fa09d8721d5c', '00aee39d-43d4-4597-9732-361269837d19', 'Laitue Roma bio', 'Laitue bio fraîche', 1.50, 60.000, 'kg', ARRAY['https://wordpress.potagercity.fr/wp-content/uploads/2019/02/fiche_salade_romaine.jpg'], true);
