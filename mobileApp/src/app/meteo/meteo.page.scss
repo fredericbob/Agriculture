@@ -1,0 +1,219 @@
+/* =======================
+   GLOBAL THEME
+   ======================= */
+ion-content {
+  --background: linear-gradient(135deg, #141e30, #243b55); /* dégradé bleu nuit */
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+/* =======================
+   CARTES
+   ======================= */
+ion-card {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  margin: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+ion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+ion-card-header {
+  text-align: center;
+  padding: 12px 10px;
+}
+
+/* =======================
+   TITRES & TEXTES
+   ======================= */
+ion-card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+ion-card-subtitle {
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 3.2rem;
+  font-weight: bold;
+  color: #ffd369; /* couleur chaleur */
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+/* =======================
+   MÉTÉO ACTUELLE
+   ======================= */
+.main-weather {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.temperature h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #ffde59;
+}
+
+.description {
+  text-align: center;
+}
+
+.description ion-icon {
+  font-size: 3rem;
+  color: #ffde59;
+  margin-top: 5px;
+}
+
+.feels-like {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.feels-like p {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #ddd;
+}
+
+/* =======================
+   PRÉVISIONS
+   ======================= */
+.forecast-item {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 15px;
+  padding: 12px;
+  margin: 6px;
+  min-width: 75px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.forecast-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.forecast-item p {
+  margin: 5px 0;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.forecast-item ion-icon {
+  font-size: 2rem;
+  color: #ffd369;
+}
+
+/* =======================
+   STOCKS
+   ======================= */
+ion-list {
+  background: transparent;
+}
+
+ion-item {
+  --background: transparent;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+ion-item h3 {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+ion-item p {
+  color: #bbbbbb;
+  font-size: 0.9rem;
+}
+
+/* =======================
+   BOUTONS
+   ======================= */
+ion-button {
+  margin: 15px auto;
+  --border-radius: 14px;
+  --background: linear-gradient(135deg, #4facfe, #00f2fe)
+  --box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 20px;
+}
+
+ion-button:hover {
+  filter: brightness(1.1);
+}
+
+/* =======================
+   STOCKS (PERSONNALISÉ)
+   ======================= */
+ion-card.stock-card {
+  background: rgba(0, 0, 0, 0.45); /* fond plus sombre */
+  border: 1px solid rgba(0, 255, 200, 0.3); /* liseré turquoise */
+  box-shadow: 0 6px 20px rgba(0, 255, 200, 0.2); /* glow léger */
+}
+
+ion-card.stock-card ion-card-title {
+  color: #00f2fe; /* titre bien contrasté */
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+ion-card.stock-card ion-item {
+  --background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin: 6px 0;
+  padding: 10px;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+ion-card.stock-card ion-item:hover {
+  transform: scale(1.03);
+  --background: rgba(0, 255, 200, 0.08);
+}
+
+ion-card.stock-card ion-item h3 {
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+ion-card.stock-card ion-item p {
+  color: #00f2fe;
+  font-weight: 500;
+}
+
+/* Bouton stock spécifique */
+ion-card.stock-card ion-button {
+  --background: linear-gradient(135deg, #00f2fe, #4facfe);
+  --color: #000;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0,255,200,0.3);
+}

@@ -1,0 +1,242 @@
+<div class="container mx-auto p-4">
+
+  <!-- Header fixe -->
+  <div class="flex justify-between items-center fixed top-0 left-0 right-0 glass-effect z-50 p-6 shadow-xl animate-fade-in-up">
+    <div class="flex items-center space-x-4">
+      <div class="w-10 h-10 bg-american-gradient rounded-full flex items-center justify-center">
+      <span class="text-white font-bold text-lg">🇲🇬</span>
+      </div>
+      <h2 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        Bonjour, {{ userName }}
+      </h2>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="max-w-md mx-6">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <span class="text-xl">🔍</span>
+        </div>
+        <input type="text"
+               placeholder="Rechercher un produit..."
+               [(ngModel)]="searchTerm"
+               (ngModelChange)="filterProducts()"
+               class="w-full pl-12 pr-6 py-2 text-base bg-white rounded-2xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-200 transition-all duration-300 shadow-lg hover:shadow-xl font-medium text-gray-700">
+      </div>
+    </div>
+
+    <!-- Boutons Panier + Déconnexion -->
+    <div class="flex items-center space-x-4">
+      <button (click)="toggleCart()" class="btn-cart text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 relative">
+        <span class="flex items-center space-x-2">
+          <span>🛒</span>
+          <span>Panier</span>
+        </span>
+        <span *ngIf="cart.length > 0" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+          {{ cart.length }}
+        </span>
+      </button>
+     <button (click)="goToHistory()"
+        class="btn-american text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all">
+        📜 Historique
+      </button>
+
+
+
+      <button (click)="logout()" class="btn-american text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+        <span class="flex items-center space-x-2">
+          <span>Déconnexion</span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Titre -->
+  <div class="pt-24 pb-8 animate-fade-in-up">
+    <h1 class="text-4xl font-black text-center bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 bg-clip-text text-transparent mb-2">
+      Produits disponibles
+    </h1>
+    <div class="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
+  </div>
+
+  <!-- Liste produits -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 animate-scale-in">
+    <div *ngFor="let product of filteredProducts" class="bg-product-card p-6 rounded-3xl shadow-xl hover-lift animate-pulse-hover border border-white/20">
+      <div class="relative overflow-hidden rounded-2xl mb-4 group">
+        <img [src]="product.image_urls[0]" alt="{{product.titre}}" class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-4 right-4">
+          <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">🌿 Frais</span>
+        </div>
+      </div>
+      <h2 class="font-bold text-xl text-gray-800 mb-2">{{product.titre}}</h2>
+      <p class="text-gray-600 mb-3 leading-relaxed">{{product.description}}</p>
+      <div class="flex justify-between items-center mb-3">
+        <p class="text-2xl font-bold text-purple-600">
+  {{ product.price | number:'1.1-1' }} MGA
+</p>
+
+        <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">/ {{product.unit}}</span>
+      </div>
+      <p class="text-green-600 font-semibold mb-4">
+  ✅ Disponible: {{ product.quantity_available | number:'1.0-0' }}
+</p>
+
+      <button (click)="addToCart(product)"
+              class="w-full btn-cart text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+        <span class="flex items-center justify-center space-x-2">
+          <span>🛒</span>
+          <span>Ajouter au panier</span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Panier toggleable -->
+  <div *ngIf="isCartVisible" class="fixed top-24 right-4 w-96 h-[80vh] p-6 rounded-3xl shadow-2xl bg-gradient-to-br from-white to-gray-50 border border-white/50 animate-scale-in z-50 flex flex-col">
+
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Votre panier</h2>
+      <button (click)="toggleCart()" class="text-red-500 font-bold text-xl">✖</button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto space-y-4 mb-4">
+      <div *ngIf="cart.length === 0" class="text-gray-500 italic">
+        Votre panier est vide.
+      </div>
+
+      <div *ngFor="let item of cart" class="flex justify-between items-center p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
+        <span class="font-semibold text-gray-800">{{ item.product.titre }}</span>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <button (click)="updateQuantity(item, item.quantity - 1)" class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">-</button>
+            <input type="number" [(ngModel)]="item.quantity" min="1"
+                   (ngModelChange)="updateQuantity(item, $event)"
+                   class="border-2 border-purple-200 rounded-lg px-3 py-2 w-20 text-center font-semibold focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all">
+            <button (click)="updateQuantity(item, item.quantity + 1)" class="w-8 h-8 rounded-full bg-purple-500 hover:bg-purple-600 text-white flex items-center justify-center transition-colors">+</button>
+          </div>
+          <span class="text-xl font-bold text-purple-600 min-w-32">
+  {{ (item.product.price * item.quantity) | number:'1.1-1' }} MGA
+</span>
+
+          <button (click)="removeFromCart(item.product.id)" class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-200">🗑️</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="border-t-2 border-purple-200 pt-4 mb-4">
+        <div class="flex justify-between items-center p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl shadow-inner">
+          <span class="text-2xl font-bold text-gray-800">Total :</span>
+          <span class="text-4xl font-black text-purple-600">
+  {{ getCartTotal() | number:'1.1-1' }} MGA
+</span>
+
+        </div>
+      </div>
+      <button (click)="checkout()"
+              class="w-full btn-checkout text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
+        <span class="flex items-center justify-center space-x-3">
+          <span>💳</span>
+          <span>Passer la commande</span>
+          <span>✨</span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div *ngIf="showNotification"
+       class="fixed top-24 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-xl z-50 animate-fade-in-up">
+    {{ notificationMessage }}
+  </div>
+</div>
+
+  <!-- ✅ Modal Formulaire Commande -->
+  <div *ngIf="showCheckoutForm"
+       class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in-up">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 relative">
+      <button (click)="closeCheckoutForm()" class="absolute top-4 right-4 text-red-500 text-xl">✖</button>
+
+      <h2 class="text-2xl font-bold text-purple-600 mb-6">Valider ma commande</h2>
+
+      <form #orderForm="ngForm" (ngSubmit)="submitOrder(orderForm)">
+        <div class="space-y-4">
+          <input type="text" placeholder="Nom complet" [(ngModel)]="orderData.name" name="name" required
+                 class="w-full border rounded-xl p-3 focus:ring-2 focus:ring-purple-400">
+
+          <input type="tel" placeholder="Téléphone" [(ngModel)]="orderData.phone" name="phone" required
+                 class="w-full border rounded-xl p-3 focus:ring-2 focus:ring-purple-400">
+
+          <input type="email" placeholder="Email" [(ngModel)]="orderData.email" name="email"
+                 class="w-full border rounded-xl p-3 focus:ring-2 focus:ring-purple-400">
+
+          <textarea placeholder="Adresse de livraison" [(ngModel)]="orderData.address" name="address" required
+                    class="w-full border rounded-xl p-3 focus:ring-2 focus:ring-purple-400"></textarea>
+
+          <select [(ngModel)]="orderData.delivery" name="delivery"
+                  class="w-full border rounded-xl p-3 focus:ring-2 focus:ring-purple-400">
+            <option value="standard">Livraison standard</option>
+            <option value="express">Livraison express</option>
+          </select>
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+          <span class="text-xl font-bold text-gray-700">Total: {{ getCartTotal() | number:'1.1-1' }} MGA</span>
+          <button type="submit"
+                  class="btn-checkout text-white px-6 py-3 rounded-xl font-bold shadow-lg">
+            ✅ Confirmer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out; }
+.animate-scale-in { animation: scaleIn 0.4s ease-out; }
+.animate-pulse-hover:hover { animation: pulse 0.6s ease-in-out; }
+
+/* Gradients */
+.bg-american-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.bg-product-card { background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%); }
+.bg-cart-gradient { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+
+/* Glass effect */
+.glass-effect { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+
+/* Hover effects */
+.hover-lift { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.hover-lift:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+
+/* Buttons */
+.btn-american { background: linear-gradient(135deg, #ff6b6b, #ffa500); position: relative; overflow: hidden; transition: all 0.3s ease; }
+.btn-american::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s; }
+.btn-american:hover::before { left: 100%; }
+
+.btn-cart { background: linear-gradient(135deg, #667eea, #764ba2); }
+.btn-checkout { background: linear-gradient(135deg, #56ab2f, #a8e6cf); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; }
+</style>

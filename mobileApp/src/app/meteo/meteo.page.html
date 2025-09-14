@@ -1,0 +1,121 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Météo & Stocks</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Header condensé -->
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Météo & Stocks</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Rafraîchissement -->
+  <ion-refresher slot="fixed" (ionRefresh)="rafraichir($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Chargement météo -->
+  <div *ngIf="loading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Chargement des données météo...</p>
+  </div>
+
+  <!-- Erreur météo -->
+  <ion-card *ngIf="error && !loading">
+    <ion-card-content>
+      <ion-text color="danger">
+        <h2>{{ error }}</h2>
+      </ion-text>
+      <ion-button expand="block" (click)="chargerMeteo()">Réessayer</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Météo actuelle -->
+  <div *ngIf="meteoData && !loading">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ meteoData.name }}</ion-card-title>
+        <ion-card-subtitle>{{ meteoData.sys.country }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="main-weather">
+          <div class="temperature">
+            <h1>{{ meteoData.main.temp | number:'1.0-0' }}°C</h1>
+          </div>
+          <div class="description">
+            <h2>{{ meteoData.weather[0].description | titlecase }}</h2>
+            <ion-icon [name]="getWeatherIcon(meteoData.weather[0].main)" size="large"></ion-icon>
+          </div>
+        </div>
+        <div class="feels-like">
+          <p>Ressenti : {{ meteoData.main.feels_like | number:'1.0-0' }}°C</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Prévisions -->
+    <ion-card *ngIf="previsions.length > 0">
+      <ion-card-header>
+        <ion-card-title>Prévisions sur 24h</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="3" *ngFor="let prev of previsions">
+              <div class="forecast-item">
+                <p>{{ prev.dt_txt | date:'HH:mm' }}</p>
+                <ion-icon [name]="getWeatherIcon(prev.weather[0].main)" size="small"></ion-icon>
+                <p>{{ prev.main.temp | number:'1.0-0' }}°C</p>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Alerte météo -->
+    <ion-card *ngIf="alerteMeteo">
+      <ion-card-content>
+        <ion-text color="danger">
+          <h2>{{ alerteMeteo }}</h2>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Stocks -->
+  <ion-card class="stock-card"  *ngIf="!loadingStocks">
+    <ion-card-header>
+      <ion-card-title>Mes stocks</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let s of stocks">
+          <ion-label>
+            <h3>{{ s.titre }}</h3>
+            <p>Quantité disponible: {{ s.quantity_available | number:'1.1-1' }} {{ s.unit }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+    <ion-button expand="block" fill="outline" (click)="rafraichirStocks()">
+      Actualiser les stocks
+    </ion-button>
+  </ion-card>
+
+  <!-- Chargement stocks -->
+  <div *ngIf="loadingStocks" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Chargement des stocks...</p>
+  </div>
+
+  <!-- Erreur stocks -->
+  <div *ngIf="errorStocks" class="error-container">
+    <p>{{ errorStocks }}</p>
+  </div>
+
+</ion-content>

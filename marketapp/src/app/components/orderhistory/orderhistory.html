@@ -1,0 +1,46 @@
+<div class="container mx-auto p-6">
+   <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-purple-600">📜 Historique de vos commandes</h1>
+   <button (click)="goToProducts()"
+        class="btn-american text-white relative px-4 py-2 rounded-full shadow-lg hover:shadow-xl z-10">
+  🏠 Retour à l’accueil
+</button>
+
+  </div>
+
+  <div *ngIf="orders.length === 0" class="text-gray-500 italic">
+    Vous n’avez encore passé aucune commande.
+  </div>
+
+  <div *ngFor="let order of orders" class="p-6 mb-6 bg-white rounded-2xl shadow-lg border border-gray-200">
+    <div class="flex justify-between items-center mb-4">
+      <span class="font-bold text-xl text-gray-700">Commande #{{ order.id }}</span>
+      <span class="text-sm px-3 py-1 rounded-full font-semibold"
+            [ngClass]="{
+              'bg-yellow-200 text-yellow-800': order.status === 'En attente',
+              'bg-green-200 text-green-800': order.status === 'Confirmée',
+              'bg-blue-200 text-blue-800': order.status === 'Livrée'
+            }">
+        {{ order.status }}
+      </span>
+    </div>
+
+    <p class="text-gray-600">📅 {{ order.date | date:'short' }}</p>
+    <p class="text-gray-600">👤 {{ order.userName }} - 📞 {{ order.contact }}</p>
+    <p class="text-gray-600">📍 {{ order.address }}</p>
+
+    <div class="mt-4">
+      <h2 class="font-bold text-gray-800 mb-2">Produits :</h2>
+      <ul class="list-disc list-inside space-y-1">
+        <li *ngFor="let item of order.items">
+          {{ item.titre }} - x{{ item.quantity }} →
+          <span class="font-semibold">{{ item.price * item.quantity | number:'1.1-1' }} MGA</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mt-4 text-right font-black text-2xl text-purple-600">
+      Total : {{ order.total | number:'1.1-1' }} MGA
+    </div>
+  </div>
+</div>
